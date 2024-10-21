@@ -22,6 +22,9 @@ export default function SuccessRoute() {
             <Button asChild className="w-full mt-5 sm:mt-6">
               <Link href="/">Back to Homepage</Link>
             </Button>
+            <Button asChild className="w-full mt-5 sm:mt-6">
+              <Link href="/">Contact Us</Link>
+            </Button>
           </div>
         </div>
       </Card>
