@@ -23,7 +23,7 @@ export default function SuccessRoute() {
               <Link href="/">Back to Homepage</Link>
             </Button>
             <Button asChild className="w-full mt-5 sm:mt-6">
-              <Link href="/">Contact Us</Link>
+              <Link href="https://dustin-tech-hub-contact-form.netlify.app/">Contact Us</Link>
             </Button>
           </div>
         </div>
