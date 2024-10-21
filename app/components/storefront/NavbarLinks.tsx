@@ -32,6 +32,11 @@ export const navbarLinks = [
     name: 'Acer',
     href: '/products/acer',
   },
+  {
+    id: 5,
+    name: 'Contact Us',
+    href: 'https://dustin-tech-hub-contact-form.netlify.app/',
+  },
 ];
 
 export function Navbarlinks() {
