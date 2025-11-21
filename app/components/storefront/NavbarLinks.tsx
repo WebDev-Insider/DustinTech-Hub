@@ -3,44 +3,17 @@
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-
-export const navbarLinks = [
-  {
-    id: 0,
-    name: 'Home',
-    href: '/',
-  },
-
-  {
-    id: 1,
-    name: 'All Laptops',
-    href: '/products/all',
-  },
-
-  {
-    id: 2,
-    name: 'Hp',
-    href: '/products/hp',
-  },
-  {
-    id: 3,
-    name: 'Dell',
-    href: '/products/dell',
-  },
-  {
-    id: 4,
-    name: 'Acer',
-    href: '/products/acer',
-  },
-  {
-    id: 5,
-    name: 'Contact Us',
-    href: 'https://dustin-tech-hub-contact-form.netlify.app/',
-  },
-];
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { navbarLinks, moreItems } from './nav-data';
 
 export function Navbarlinks() {
   const location = usePathname();
+  const isMoreActive = moreItems.some((i) => i.href === location);
   return (
     <div className="hidden md:flex justify-center items-center gap-x-2 ml-8">
       {navbarLinks.map((item) => (
@@ -57,6 +30,24 @@ export function Navbarlinks() {
           {item.name}
         </Link>
       ))}
+
+      <DropdownMenu>
+        <DropdownMenuTrigger
+          className={cn(
+            isMoreActive ? 'bg-muted' : 'hover:bg-muted hover:bg-opacity-75',
+            'p-2 font-medium rounded-md'
+          )}
+        >
+          More
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="start">
+          {moreItems.map((item) => (
+            <DropdownMenuItem asChild key={item.href}>
+              <Link href={item.href}>{item.name}</Link>
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   );
 }

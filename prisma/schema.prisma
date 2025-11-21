@@ -11,6 +11,7 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model User {
@@ -21,6 +22,7 @@ model User {
   profileImage String
 
   orders Order[]
+  cart   Cart?
 
   createdAt DateTime @default(now())
 }
@@ -36,6 +38,7 @@ model Product {
   isFeatured  Boolean       @default(false)
 
   createdAt DateTime @default(now())
+  cartItems CartItem[]
 }
 
 model Banner {
@@ -50,11 +53,45 @@ model Order {
   id     String @id @default(uuid())
   status String @default("pending")
   amount Int
+  reference String @unique
+  fullName    String?
+  email       String?
+  phone       String?
+  address1    String?
+  address2    String?
+  city        String?
+  state       String?
+  postalCode  String?
+  country     String?
 
   User   User?   @relation(fields: [userId], references: [id])
   userId String?
 
   createdAt DateTime @default(now())
+}
+
+model Cart {
+  id        String     @id @default(uuid())
+  userId    String
+  user      User       @relation(fields: [userId], references: [id])
+  items     CartItem[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@unique([userId])
+}
+
+model CartItem {
+  id         String   @id @default(uuid())
+  cartId     String
+  cart       Cart     @relation(fields: [cartId], references: [id])
+  productId  String
+  product    Product  @relation(fields: [productId], references: [id])
+  quantity   Int      @default(1)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([cartId, productId])
 }
 
 enum ProductStatus {
@@ -67,4 +104,10 @@ enum Category {
   hp
   dell
   acer
+  lenovo
+  msi
+  chromebook
+  apple
+  asus
+  mobile
 }

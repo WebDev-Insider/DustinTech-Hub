@@ -21,7 +21,7 @@ async function getData() {
 export async function Hero() {
   const data = await getData();
   return (
-    <Carousel>
+    <Carousel autoPlay autoPlayInterval={3000} opts={{ loop: true }}>
       <CarouselContent>
         {data.map((item) => (
           <CarouselItem key={item.id}>

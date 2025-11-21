@@ -23,11 +23,20 @@ async function getData() {
       createdAt: true,
       status: true,
       id: true,
+      fullName: true,
+      email: true,
+      phone: true,
+      address1: true,
+      address2: true,
+      city: true,
+      state: true,
+      postalCode: true,
+      country: true,
       User: {
         select: {
           firstName: true,
-          email: true,
           profileImage: true,
+          email: true,
         },
       },
     },
@@ -53,7 +62,9 @@ export default async function OrdersPage() {
           <TableHeader>
             <TableRow>
               <TableHead>Customer</TableHead>
-              <TableHead>Type</TableHead>
+              <TableHead>Email</TableHead>
+              <TableHead>Phone</TableHead>
+              <TableHead>Shipping Address</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Date</TableHead>
               <TableHead className="text-right">Amount</TableHead>
@@ -63,18 +74,24 @@ export default async function OrdersPage() {
             {data.map((item) => (
               <TableRow key={item.id}>
                 <TableCell>
-                  <p className="font-medium">{item.User?.firstName}</p>
+                  <p className="font-medium">{item.fullName ?? item.User?.firstName}</p>
                   <p className="hidden md:flex text-sm text-muted-foreground">
-                    {item.User?.email}
+                    {item.email ?? item.User?.email}
                   </p>
                 </TableCell>
-                <TableCell>Order</TableCell>
+                <TableCell>{item.email ?? item.User?.email}</TableCell>
+                <TableCell>{item.phone ?? '-'}</TableCell>
+                <TableCell>
+                  {[item.address1, item.address2, item.city, item.state, item.postalCode, item.country]
+                    .filter(Boolean)
+                    .join(', ')}
+                </TableCell>
                 <TableCell>{item.status}</TableCell>
                 <TableCell>
                   {new Intl.DateTimeFormat('en-US').format(item.createdAt)}
                 </TableCell>
                 <TableCell className="text-right">
-                  ${new Intl.NumberFormat('en-US').format(item.amount / 100)}
+                  ₦{new Intl.NumberFormat('en-NG').format(item.amount / 100)}
                 </TableCell>
               </TableRow>
             ))}

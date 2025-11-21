@@ -4,6 +4,7 @@ import './globals.css';
 import { NextSSRPlugin } from '@uploadthing/react/next-ssr-plugin';
 import { extractRouterConfig } from 'uploadthing/server';
 import { ourFileRouter } from './api/uploadthing/core';
+import { ThemeProvider } from './components/theme/theme-provider';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -18,10 +19,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
-        {children}
+        <ThemeProvider>
+          <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

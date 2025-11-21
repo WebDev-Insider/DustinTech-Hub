@@ -1,7 +1,6 @@
-import { checkOut, delItem } from '@/app/actions';
-import { CheckoutButton, DeleteItem } from '@/app/components/SubmitButtons';
-import { Cart } from '@/app/lib/interfaces';
-import { redis } from '@/app/lib/redis';
+import { delItem } from '@/app/actions';
+import { DeleteItem } from '@/app/components/SubmitButtons';
+import prisma from '@/app/lib/db';
 import { Button } from '@/components/ui/button';
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import { ShoppingBag } from 'lucide-react';
@@ -19,16 +18,27 @@ export default async function BagRoute() {
     redirect('/');
   }
 
-  const cart: Cart | null = await redis.get(`cart-${user.id}`);
-
-  let totalPrice = 0;
-
-  cart?.items.forEach((item) => {
-    totalPrice += item.price * item.quantity;
+  const cart = await prisma.cart.findFirst({
+    where: { userId: user.id },
+    include: {
+      items: { include: { product: { select: { id: true, name: true, price: true, images: true } } } },
+    },
   });
+
+  type CartItemWithProduct = {
+    id: string;
+    quantity: number;
+    product: { id: string; name: string; price: number; images: string[] };
+  };
+  const items = (cart?.items ?? []) as CartItemWithProduct[];
+  const totalPrice = items.reduce(
+    (sum: number, item: CartItemWithProduct) =>
+      sum + item.product.price * item.quantity,
+    0
+  );
   return (
     <div className="max-w-2xl mx-auto mt-10 min-h-[55vh]">
-      {!cart || !cart.items ? (
+      {items.length === 0 ? (
         <div className="flex min-h-[400px] flex-col items-center justify-center rounded-lg border border-dashed p-8 text-center mt-20">
           <div className="flex h-20 w-20 items-center justify-center rounded-full bg-primary/10">
             <ShoppingBag className="w-10 h-10 text-primary" />
@@ -46,25 +56,27 @@ export default async function BagRoute() {
         </div>
       ) : (
         <div className="flex flex-col gap-y-10">
-          {cart?.items.map((item) => (
+          {items.map((item: CartItemWithProduct) => (
             <div key={item.id} className="flex">
               <div className="w-24 h-24 sm:w-32 sm:h-32 relative">
                 <Image
                   fill
                   className="rounded-md object-cover"
-                  src={item.imageString}
+                  src={item.product.images[0]}
                   alt="product image"
                 />
               </div>
               <div className="ml-5 flex justify-between w-full font-medium">
-                <p>{item.name}</p>
+                <p>{item.product.name}</p>
                 <div className="flex flex-col h-full justify-between">
                   <div className="flex items-center gap-x-2">
                     <p>{item.quantity} x</p>
-                    <p>${item.price}</p>
+                    <p>
+                      ₦{new Intl.NumberFormat('en-NG').format(item.product.price)}
+                    </p>
                   </div>
                   <form action={delItem} className="text-end">
-                    <input type="hidden" name="productId" value={item.id} />
+                    <input type="hidden" name="productId" value={item.product.id} />
                     <DeleteItem />
                   </form>
                 </div>
@@ -74,12 +86,14 @@ export default async function BagRoute() {
           <div className="mt-10">
             <div className="flex items-center justify-between font-medium">
               <p>Subtotal:</p>
-              <p>${new Intl.NumberFormat('en-US').format(totalPrice)}</p>
+              <p>
+                ₦{new Intl.NumberFormat('en-NG').format(totalPrice)}
+              </p>
             </div>
 
-            <form action={checkOut}>
-              <CheckoutButton />
-            </form>
+            <Button asChild size="lg" className="w-full mt-5">
+              <Link href="/checkout">Proceed to Checkout</Link>
+            </Button>
           </div>
         </div>
       )}

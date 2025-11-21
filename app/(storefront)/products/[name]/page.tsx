@@ -84,6 +84,126 @@ async function getData(productCategory: string) {
         data: data,
       };
     }
+    case 'lenovo': {
+      const data = await prisma.product.findMany({
+        where: {
+          status: 'published',
+          category: 'lenovo',
+        },
+        select: {
+          name: true,
+          images: true,
+          price: true,
+          id: true,
+          description: true,
+        },
+      });
+
+      return {
+        title: 'Products for Lenovo',
+        data,
+      };
+    }
+    case 'msi': {
+      const data = await prisma.product.findMany({
+        where: {
+          status: 'published',
+          category: 'msi',
+        },
+        select: {
+          name: true,
+          images: true,
+          price: true,
+          id: true,
+          description: true,
+        },
+      });
+
+      return {
+        title: 'Products for MSI',
+        data,
+      };
+    }
+    case 'chromebook': {
+      const data = await prisma.product.findMany({
+        where: {
+          status: 'published',
+          category: 'chromebook',
+        },
+        select: {
+          name: true,
+          images: true,
+          price: true,
+          id: true,
+          description: true,
+        },
+      });
+
+      return {
+        title: 'Chromebooks',
+        data,
+      };
+    }
+    case 'apple': {
+      const data = await prisma.product.findMany({
+        where: {
+          status: 'published',
+          category: 'apple',
+        },
+        select: {
+          name: true,
+          images: true,
+          price: true,
+          id: true,
+          description: true,
+        },
+      });
+
+      return {
+        title: 'Apple Store',
+        data,
+      };
+    }
+    case 'asus': {
+      const data = await prisma.product.findMany({
+        where: {
+          status: 'published',
+          category: 'asus',
+        },
+        select: {
+          name: true,
+          images: true,
+          price: true,
+          id: true,
+          description: true,
+        },
+      });
+
+      return {
+        title: 'Products for Asus',
+        data,
+      };
+    }
+    case 'mobile': {
+      const data = await prisma.product.findMany({
+        where: {
+          status: 'published',
+          category: 'mobile',
+        },
+        select: {
+          name: true,
+          images: true,
+          price: true,
+          id: true,
+          description: true,
+        },
+      });
+
+      return {
+        title: 'Mobile Phones',
+        data,
+      };
+    }
     default: {
       return notFound();
     }
