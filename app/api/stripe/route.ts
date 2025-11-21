@@ -29,6 +29,7 @@ export async function POST(req: Request) {
           amount: session.amount_total as number,
           status: session.status as string,
           userId: session.metadata?.userId,
+          reference: session.id as string,
         },
       });
 
