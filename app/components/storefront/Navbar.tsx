@@ -39,20 +39,60 @@ export async function Navbar() {
               <MenuIcon className="h-5 w-5" />
             </Button>
           </SheetTrigger>
-          <SheetContent side="left">
-            <nav className="flex flex-col gap-3 text-lg font-medium mt-5">
+          <SheetContent side="left" className="flex flex-col">
+            <nav className="flex-1 flex flex-col gap-3 text-lg font-medium mt-5">
               {navbarLinks.map((item) => (
-                <Link key={item.id} href={item.href} className="px-2 py-1 rounded-md hover:bg-muted">
+                <Link 
+                  key={item.id} 
+                  href={item.href} 
+                  className="px-2 py-2 rounded-md hover:bg-muted transition-colors"
+                >
                   {item.name}
                 </Link>
               ))}
               <div className="mt-2 text-sm text-muted-foreground">More</div>
               {moreItems.map((item) => (
-                <Link key={item.href} href={item.href} className="px-2 py-1 rounded-md hover:bg-muted">
+                <Link 
+                  key={item.href} 
+                  href={item.href} 
+                  className="px-2 py-2 rounded-md hover:bg-muted transition-colors"
+                >
                   {item.name}
                 </Link>
               ))}
             </nav>
+            
+            {!user && (
+              <div className="mt-auto pt-4 border-t border-border">
+                <div className="flex flex-col space-y-3">
+                  <Button variant="outline" className="w-full" asChild>
+                    <LoginLink>Sign in</LoginLink>
+                  </Button>
+                  <Button className="w-full" asChild>
+                    <RegisterLink>Create Account</RegisterLink>
+                  </Button>
+                </div>
+              </div>
+            )}
+            
+            {user && (
+              <div className="mt-auto pt-4 border-t border-border">
+                <div className="flex items-center gap-3 px-2 py-3">
+                  <img 
+                    src={user.picture ?? `https://avatar.vercel.sh/${user.given_name}`} 
+                    alt="User avatar"
+                    className="h-8 w-8 rounded-full"
+                  />
+                  <div>
+                    <p className="text-sm font-medium">{user.given_name} {user.family_name}</p>
+                    <p className="text-xs text-muted-foreground">{user.email}</p>
+                  </div>
+                </div>
+                <Button variant="outline" className="w-full mt-2" asChild>
+                  <Link href="/dashboard/orders">My Orders</Link>
+                </Button>
+              </div>
+            )}
           </SheetContent>
         </Sheet>
         <Link href="/">
